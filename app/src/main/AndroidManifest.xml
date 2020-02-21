@@ -34,12 +34,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LatestMessageActivity" />
         </activity>
-        <activity android:name=".LatestMessageActivity" />
+        <activity android:name=".LatestMessageActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".RegisterActivity"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />

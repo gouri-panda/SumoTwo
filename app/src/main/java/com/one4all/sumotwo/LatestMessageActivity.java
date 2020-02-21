@@ -1,9 +1,11 @@
 package com.one4all.sumotwo;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -34,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -120,6 +125,12 @@ public class LatestMessageActivity extends AppCompatActivity {
         url = new ArrayList<>();
         progressBar.getProgressDrawable();
         progressBar.setVisibility(View.VISIBLE);
+        /**
+         * Not necessary to delete the cache
+         */
+//        ClearDiskCache clearDiskCache = new ClearDiskCache(LatestMessageActivity.this);
+//        clearDiskCache.execute();
+
 
 
 
@@ -132,6 +143,7 @@ public class LatestMessageActivity extends AppCompatActivity {
          floatingActionButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
+
                  Intent intent = new Intent(LatestMessageActivity.this,UserListActivity.class);
                  startActivity(intent);
 
@@ -230,7 +242,7 @@ public class LatestMessageActivity extends AppCompatActivity {
 
                         Messages messages = snapshot.getValue(Messages.class);
                         String key = dataSnapshot.getKey();
-                        Log.d("dataSnapshotLatestUid", messages.getFromTo());
+//                        Log.d("dataSnapshotLatestUid", messages.getFromTo());
                         String a;
 
                         uidList.add(messages.getFromFrom());
@@ -405,11 +417,33 @@ class ChatItemForLatestMessage extends Item<ViewHolder>{
                 }
             });
     }
+    public String getUId(int position){
+        return uidList.get(position);
+    }
 
 
 
     @Override
     public int getLayout() {
         return R.layout.latest_message;
+    }
+}
+class ClearDiskCache extends AsyncTask<Void,Void,Void>{
+    private static final String TAG = "ClearDiskCache";
+    private Context context;
+
+    public ClearDiskCache(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        Glide.get(context).clearDiskCache();
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        Log.d(TAG, "onPostExecute: finished ");
     }
 }

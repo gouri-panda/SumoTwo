@@ -57,8 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
     // Firebase instance variables
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
-//    FirebaseStorage firebaseStorage;
-//    Firestore firestore;
     Button choosePhoto;
     Uri uri;
     String imageLink;
@@ -68,23 +66,11 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-
-
-
-
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data !=null){
-            Log.d("return","photoclicked");
-
-
-
-                try{
-
-             uri = data.getData();
+            try{
+        uri = data.getData();
             Bitmap bit = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
             BitmapDrawable bitmapDrawable1 = new BitmapDrawable(bit);
-
-//            choosePhoto.setBackgroundDrawable(bitmapDrawable1);
             circleImageView.setImageBitmap(bit);
             choosePhoto.setAlpha(0f);
 
@@ -203,16 +189,6 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             // TODO: Call create FirebaseUser() here
             createFireBaseUser();
-            String name = mUsernameView.getText().toString();
-            String userEmail = mEmailView.getText().toString();
-
-//
-// ...
-// future.get() blocks on response
-
-//
-
-
 
         }
     }
@@ -281,9 +257,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
     public void uploadImageToFirebaseStorage(){
         if (uri == null){
-
-
-                    uri = Uri.parse("android.resource://com.one4all.sumotwo/drawable/sumo1.jpg");
+             uri = Uri.parse("android.resource://com.one4all.sumotwo/drawable/sumo1.jpg");
 
 
 

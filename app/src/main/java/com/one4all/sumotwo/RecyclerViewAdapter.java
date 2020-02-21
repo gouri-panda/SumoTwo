@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        Picasso.get().load(images.get(position)).into(holder.circleImageView);
+//        Picasso.get().load(images.get(position)).into(holder.circleImageView);
+        Glide.with(holder.itemView.getContext()).load(images.get(position)).into(holder.circleImageView);
         holder.textView.setText(imageNames.get(position));
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +62,12 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
             }
         });
 
+
     }
+    public String getUid(int position){
+        return uid.get(position);
+    }
+
 
     @Override
     public int getItemCount() {
