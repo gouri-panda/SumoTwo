@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +23,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     TextView textView3;
     ProgressBar progressBar;
+    ImageView loginImage;
 
 
 
@@ -36,15 +41,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBarLogin);
-        progressBar.setVisibility(View.VISIBLE);
-
-
-
-
-
-
+        progressBar.setVisibility(View.INVISIBLE);
         mEmailView =  findViewById(R.id.login_email);
+        loginImage = findViewById(R.id.login_image);
         mPasswordView =  findViewById(R.id.login_password);
+
+        loginImage.animate().scaleX(2f).scaleY(2f).setDuration(2000).start();
 
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -87,7 +89,17 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin() {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        if (email.equals("") || password.equals("")) {
+        if (email.isEmpty() || password.isEmpty()) {
+            if (email.isEmpty()){
+                mEmailView.setError("Email Required");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }else if (password.isEmpty()){
+                mPasswordView.setError("Password Required");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            progressBar.setVisibility(View.GONE);
             return;
         } else {
             Toast.makeText(this, "Login progress...", Toast.LENGTH_SHORT).show();
@@ -98,27 +110,25 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (!task.isSuccessful()) {
-                    showError("Problem in sign in");
+                        progressBar.setVisibility(View.GONE);
+                        showError(Objects.requireNonNull(task.getException()).getMessage());
                     } else {
                         progressBar.setVisibility(View.GONE);
-
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
-
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     }
                 }
             });
         }
-
-
     }
 //
-//        show error dialouge
+//        show error Dialogue
     private  void showError(String messge) {
         new AlertDialog.Builder(this)
                 .setTitle("Oops")
-                .setMessage("Email or password is incorrect.Please ty again")
+                .setMessage(messge)
                 .setPositiveButton("ok", null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();

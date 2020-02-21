@@ -2,6 +2,7 @@ package com.one4all.sumotwo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,10 +41,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
-
+    private static final String TAG = "RegisterActivity";
     public static final String CHAT_PREFS = "ChatPrefs";
     public static final String DISPLAY_NAME_KEY = "username";
 
@@ -66,61 +70,32 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data !=null){
-            try{
-        uri = data.getData();
-            Bitmap bit = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
-            BitmapDrawable bitmapDrawable1 = new BitmapDrawable(bit);
-            circleImageView.setImageBitmap(bit);
-            choosePhoto.setAlpha(0f);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            try {
+                uri = data.getData();
+                Bitmap bit = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                BitmapDrawable bitmapDrawable1 = new BitmapDrawable(bit);
+                circleImageView.setImageBitmap(bit);
+                choosePhoto.setAlpha(0f);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        }
-
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        progressDialog = new ProgressDialog(RegisterActivity.this);
-        FirebaseApp.initializeApp(getApplicationContext());
-
-        mEmailView =  findViewById(R.id.register_email);
-        mPasswordView =  findViewById(R.id.register_password);
-        mConfirmPasswordView =  findViewById(R.id.register_confirm_password);
-        mUsernameView =  findViewById(R.id.register_username);
-        choosePhoto = findViewById(R.id.choose_photo);
-        circleImageView = findViewById(R.id.profile_image);
-        getSupportActionBar().setTitle("Enter your details");
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        initializeReference();
         choosePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);//unless doesn't work
                 intent.setType("image/*");
-                startActivityForResult(intent,0);
-//                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
-
-//         firebaseStorage.getReference().child("userList").putBytes(mEmailView.getText().toString().getBytes());
-
-
-
-
-
-
-
-//
-
         // Keyboard sign in action
         mConfirmPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -132,21 +107,19 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-        //  instance of FirebaseAuth
-
-        firebaseAuth  = FirebaseAuth.getInstance();
-
+        firebaseAuth = FirebaseAuth.getInstance();
 
 
     }
 
-        // Executed when Sign Up button is pressed.
+    // Executed when Sign Up button is pressed.
     public void signUp(View v) {
         attemptRegistration();
     }
 
+    /**
+     * Checks if the user registration details is correct or not
+     */
     private void attemptRegistration() {
 
         // Reset errors displayed in the form.
@@ -195,7 +168,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         // You can add more checking logic here.
-        return email.contains("@");
+        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            return true;
+        }
+        return false;
     }
 
     private boolean isPasswordValid(String password) {
@@ -205,66 +181,66 @@ public class RegisterActivity extends AppCompatActivity {
         return password.equals(confiremPassword) && password.length() > 5;
     }
 
-    // Create a Firebase userListFragment
-    public void createFireBaseUser(){
+    /**
+     * Creates a firebase user account
+     */
+    public void createFireBaseUser() {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d("sumo","sumo created");
+                Log.d("sumo", "sumo created");
 
-                if (!task.isSuccessful()){
-//                    showErrorDialog("Email already exists");
-                }else {
+                if (!task.isSuccessful()) {
+                    if (task.getException() != null) {
+                        String message = task.getException().getMessage();
+                        showErrorDialog(message);
+                    }
+                } else {
                     uploadImageToFirebaseStorage();
                     saveName();
                     progressDialog.dismiss();
-                    Intent intent = new Intent(RegisterActivity.this,LatestMessageActivity.class);
-
-//                    finish();
+                    Intent intent = new Intent(RegisterActivity.this, LatestMessageActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
             }
         });
-
-
     }
-
 
     // Save the display name to Shared Preferences
-    private  void saveName(){
+    private void saveName() {
         String name = mUsernameView.getText().toString();
-        SharedPreferences sharedPreferences =getSharedPreferences(CHAT_PREFS,0);
-        sharedPreferences.edit().putString(DISPLAY_NAME_KEY,name).apply();
+        SharedPreferences sharedPreferences = getSharedPreferences(CHAT_PREFS, MODE_PRIVATE);
+        sharedPreferences.edit().putString(DISPLAY_NAME_KEY, name).apply();
     }
 
-
-
-    public void showErrorDialog(String message){
+    public void showErrorDialog(String message) {
         new AlertDialog.Builder(this)
                 .setTitle("Oops")
                 .setMessage(message)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("Yes", null).show();
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        progressDialog.dismiss();
+                    }
+                }).show();
     }
-    public void goBack(View view){
-        Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-        startActivity(intent);
-    }
-    public void choosePhoto(View view){
-        Log.d("choosePhoto","choosePhoto clicked");
-    }
-    public void uploadImageToFirebaseStorage(){
-        if (uri == null){
-             uri = Uri.parse("android.resource://com.one4all.sumotwo/drawable/sumo1.jpg");
 
-
-
+    /**
+     * Upload image to firebase and saves the user information
+     */
+    public void uploadImageToFirebaseStorage() {
+        /*
+         If the user doesn't want to upload image choose default image i.e sumo logo
+         */
+        if (uri == null) {
+            uri = Uri.parse("android.resource://com.one4all.sumotwo/" + R.drawable.sumo1);
         }
-
         String fileName = UUID.randomUUID().toString();
-        final StorageReference firebaseStorage = FirebaseStorage.getInstance().getReference("/images/"+fileName);
+        final StorageReference firebaseStorage = FirebaseStorage.getInstance().getReference("/images/" + fileName);
 
 
         firebaseStorage.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -275,22 +251,38 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         imageLink = uri.toString();
-
+                        Log.d(TAG, "onComplete: photo was successfully completed");
                         Log.d("name", uri.toString());
-                        Users fireBaseUserList = new Users(firebaseAuth.getUid(),mUsernameView.getText().toString(),mEmailView.getText().toString(),imageLink);
-                         String  uid = FirebaseAuth.getInstance().getUid();
-                        databaseReference.child("userList/"+uid).push().setValue(fireBaseUserList).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<Void>() {
+                        Users fireBaseUserList = new Users(firebaseAuth.getUid(), mUsernameView.getText().toString(), mEmailView.getText().toString(), imageLink);
+                        String uid = FirebaseAuth.getInstance().getUid();
+                        databaseReference.child("userList/" + uid).push().setValue(fireBaseUserList).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-//                    Log.d("userListFragment list created","userlistCreated");
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "onComplete: Account successfully created");
+                                } else {
+                                    Log.d(TAG, "onComplete: There was an error to create Account");
+                                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
+                                }
                             }
                         });
-
-                        Log.d("uid",uid);
                     }
                 });
             }
         });
+    }
+    private void initializeReference(){
+        progressDialog = new ProgressDialog(RegisterActivity.this);
+        FirebaseApp.initializeApp(getApplicationContext());
+
+        mEmailView = findViewById(R.id.register_email);
+        mPasswordView = findViewById(R.id.register_password);
+        mConfirmPasswordView = findViewById(R.id.register_confirm_password);
+        mUsernameView = findViewById(R.id.register_username);
+        choosePhoto = findViewById(R.id.choose_photo);
+        circleImageView = findViewById(R.id.profile_image);
+        getSupportActionBar().setTitle("Enter your details");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 }
 
