@@ -2,14 +2,14 @@ package com.one4all.sumotwo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView textView3;
     ProgressBar progressBar;
     ImageView loginImage;
+    private Button loginButton;
+    private Button signUpButton;
 
 
 
@@ -44,10 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         mEmailView =  findViewById(R.id.login_email);
         loginImage = findViewById(R.id.login_image);
+        loginButton = findViewById(R.id.login_sign_in_button);
+        signUpButton = findViewById(R.id.login_register_button);
         mPasswordView =  findViewById(R.id.login_password);
+        getSupportActionBar().hide();
 
-        loginImage.animate().scaleX(2f).scaleY(2f).setDuration(2000).start();
-
+        loginImage.animate().scaleX(2f).scaleY(2f).setDuration(5000).start();
+//        loginImage.animate().translationXBy(1f).translationYBy(1f).setDuration(2000).start();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -59,11 +64,11 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-        textView3 = findViewById(R.id.textView3);
+//        textView3 = findViewById(R.id.textView3);
 
-        String text = "<font color=#cc0029>S</font><font color=#37BAF5>U</font><font color=#E000EE>M</font><font color=#BF0731>O</font>";
-        textView3.setText(Html.fromHtml(text));
-        textView3.setScaleX(2.5f);
+//        String text = "<font color=#cc0029>S</font><font color=#37BAF5>U</font><font color=#E000EE>M</font><font color=#BF0731>O</font>";
+//        textView3.setText(Html.fromHtml(text));
+//        textView3.setScaleX(2.5f);
         if (FirebaseAuth.getInstance().getUid() != null){
             Intent intent = new Intent(LoginActivity.this,LatestMessageActivity.class);
             startActivity(intent);
@@ -75,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signInExistingUser(View v) {
         progressBar.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        signUpButton.setVisibility(View.INVISIBLE);
+
         attemptLogin();
 
     }
@@ -99,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 return;
             }
+//            loginButton.setVisibility(View.VISIBLE);
+//            signUpButton.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             return;
         } else {
@@ -111,19 +121,20 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (!task.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
+                        loginButton.setVisibility(View.VISIBLE);
+                        signUpButton.setVisibility(View.VISIBLE);
                         showError(Objects.requireNonNull(task.getException()).getMessage());
                     } else {
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        finish();
                     }
+
                 }
             });
         }
     }
-//
 //        show error Dialogue
     private  void showError(String messge) {
         new AlertDialog.Builder(this)
