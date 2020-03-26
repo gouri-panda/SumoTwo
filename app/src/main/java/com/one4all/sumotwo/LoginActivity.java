@@ -46,11 +46,11 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBarLogin);
         progressBar.setVisibility(View.INVISIBLE);
-        mEmailView =  findViewById(R.id.login_email);
+        mEmailView = findViewById(R.id.login_email);
         loginImage = findViewById(R.id.login_image);
         loginButton = findViewById(R.id.login_sign_in_button);
         signUpButton = findViewById(R.id.login_register_button);
-        mPasswordView =  findViewById(R.id.login_password);
+        mPasswordView = findViewById(R.id.login_password);
         getSupportActionBar().hide();
         Glide.with(this).load(R.raw.spla).into(loginImage);
 
@@ -72,8 +72,8 @@ public class LoginActivity extends AppCompatActivity {
 //        String text = "<font color=#cc0029>S</font><font color=#37BAF5>U</font><font color=#E000EE>M</font><font color=#BF0731>O</font>";
 //        textView3.setText(Html.fromHtml(text));
 //        textView3.setScaleX(2.5f);
-        if (FirebaseAuth.getInstance().getUid() != null){
-            Intent intent = new Intent(LoginActivity.this,LatestMessageActivity.class);
+        if (FirebaseAuth.getInstance().getUid() != null) {
+            Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
             startActivity(intent);
             finish();
         }
@@ -95,17 +95,18 @@ public class LoginActivity extends AppCompatActivity {
         finish();
         startActivity(intent);
     }
-//
-   // attemptLogin() method
+
+    //
+    // attemptLogin() method
     private void attemptLogin() {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         if (email.isEmpty() || password.isEmpty()) {
-            if (email.isEmpty()){
+            if (email.isEmpty()) {
                 mEmailView.setError("Email Required");
                 progressBar.setVisibility(View.GONE);
                 return;
-            }else if (password.isEmpty()){
+            } else if (password.isEmpty()) {
                 mPasswordView.setError("Password Required");
                 progressBar.setVisibility(View.GONE);
                 return;
@@ -131,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         Util.getUsersDetailsFromFireBase(LoginActivity.this);
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
 
@@ -139,8 +140,9 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-//        show error Dialogue
-    private  void showError(String messge) {
+
+    //        show error Dialogue
+    private void showError(String messge) {
         new AlertDialog.Builder(this)
                 .setTitle("Oops")
                 .setMessage(messge)

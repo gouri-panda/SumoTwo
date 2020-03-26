@@ -62,13 +62,13 @@ public class UserListActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 //                GroupAdapter groupA = new GroupAdapter<ViewHolder>();
-                 recyclerViewAdapter = new RecyclerViewAdapter(imageUrl,names,uid,UserListActivity.this);
+                recyclerViewAdapter = new RecyclerViewAdapter(imageUrl, names, uid, UserListActivity.this);
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                     Log.d("userList", snapshot.toString());
 //                    progressDialog.dismiss();
                     progressBar.setVisibility(View.INVISIBLE);
-                    for (DataSnapshot sn: snapshot.getChildren()) {
+                    for (DataSnapshot sn : snapshot.getChildren()) {
                         Users string = sn.getValue(Users.class);
                         if (!string.getUid().equals(FirebaseAuth.getInstance().getUid())) {
                             imageUrl.add(string.getUri());
@@ -83,7 +83,6 @@ public class UserListActivity extends AppCompatActivity {
                 recyclerView.setAdapter(recyclerViewAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(UserListActivity.this));
                 recyclerView.addItemDecoration(new DividerItemDecoration(UserListActivity.this, DividerItemDecoration.HORIZONTAL));
-
 
 
             }

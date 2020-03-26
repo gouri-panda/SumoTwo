@@ -238,6 +238,7 @@ public class LatestMessageActivity extends AppCompatActivity {
                     refreshRecyclerView();
                 }
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 groupAdapter.clear();
@@ -356,9 +357,9 @@ class ChatItemForLatestMessage extends Item<ViewHolder> {
                     Users users = snapshot.getValue(Users.class);
                     Log.d("users", users.getMdisplayName());
                     userName.setText(users.getMdisplayName());
-                    if (users.getUri().equals("default")){
+                    if (users.getUri().equals("default")) {
                         Glide.with(viewHolder.itemView.getContext()).load(R.raw.sumo1).into(circleImageView);
-                    }else {
+                    } else {
                         Glide.with(viewHolder.itemView.getContext()).load(users.getUri()).placeholder(R.drawable.sumo1).into(circleImageView);
                     }
                     userNameList.add(users.getMdisplayName());

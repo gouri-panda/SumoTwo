@@ -167,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         // You can add more checking logic here.
-        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return true;
         }
         return false;
@@ -263,7 +263,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    private void saveImageLinkToDataBase(String imageLink){
+
+    private void saveImageLinkToDataBase(String imageLink) {
         Users fireBaseUserList = new Users(firebaseAuth.getUid(), mUsernameView.getText().toString(), mEmailView.getText().toString(), imageLink);
         String uid = FirebaseAuth.getInstance().getUid();
         databaseReference.child("userList/" + uid).push().setValue(fireBaseUserList).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<Void>() {
@@ -278,7 +279,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    private void initializeReference(){
+
+    private void initializeReference() {
         progressDialog = new ProgressDialog(RegisterActivity.this);
         FirebaseApp.initializeApp(getApplicationContext());
 

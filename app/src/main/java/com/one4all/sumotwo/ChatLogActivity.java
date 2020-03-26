@@ -23,10 +23,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatLogActivity extends AppCompatActivity {
-    RecyclerView recyclerView ;
+    RecyclerView recyclerView;
     Uri uri;
     String userUrl;
     ImageButton sendButton;
@@ -44,9 +45,8 @@ public class ChatLogActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chat_list_view);
         sendButton = findViewById(R.id.sendButton);
         messageInput = findViewById(R.id.messageInput);
-         imageUrl = getIntent().getStringExtra("userUrl");
-         userUid = getIntent().getStringExtra("userUid");
-
+        imageUrl = getIntent().getStringExtra("userUrl");
+        userUid = getIntent().getStringExtra("userUid");
 
 
         fetchDataFromUser();
@@ -69,14 +69,14 @@ public class ChatLogActivity extends AppCompatActivity {
                 }
 
 
-
             }
         });
 
 
     }
-    public  void fetchDataFromUser(){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("/messages/"+userUid+"/"+FirebaseAuth.getInstance().getUid());
+
+    public void fetchDataFromUser() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("/messages/" + userUid + "/" + FirebaseAuth.getInstance().getUid());
 //        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 //            GroupAdapter groupAdapter2 = new GroupAdapter();
 //            @Override
@@ -126,16 +126,15 @@ public class ChatLogActivity extends AppCompatActivity {
                 groupAdapter2.clear();//To prevent copy message
 
 
-                for (DataSnapshot  dataSnapshot1 : dataSnapshot.getChildren()){
-                    Messages a =dataSnapshot1.getValue(Messages.class);
-                    if (a.getFromTo().equals(FirebaseAuth.getInstance().getUid())){
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Messages a = dataSnapshot1.getValue(Messages.class);
+                    if (a.getFromTo().equals(FirebaseAuth.getInstance().getUid())) {
                         groupAdapter2.add(new ChatTo(a.getMessage()));
 
 
-                    }else {
-                        groupAdapter2.add(new ChatFrom(imageUrl,a.getMessage()));
+                    } else {
+                        groupAdapter2.add(new ChatFrom(imageUrl, a.getMessage()));
                     }
-
 
 
                 }
@@ -143,7 +142,7 @@ public class ChatLogActivity extends AppCompatActivity {
 
                 recyclerView.setAdapter(groupAdapter2);
                 recyclerView.setLayoutManager(new LinearLayoutManager(ChatLogActivity.this));
-                recyclerView.scrollToPosition(groupAdapter2.getItemCount()-1);
+                recyclerView.scrollToPosition(groupAdapter2.getItemCount() - 1);
 
             }
 
@@ -157,11 +156,13 @@ public class ChatLogActivity extends AppCompatActivity {
 
     }
 }
- class  ChatFrom extends Item<ViewHolder>{
 
-     String url;
-     String message;
-    public ChatFrom(String url,String message){
+class ChatFrom extends Item<ViewHolder> {
+
+    String url;
+    String message;
+
+    public ChatFrom(String url, String message) {
         this.url = url;
         this.message = message;
     }
@@ -170,34 +171,35 @@ public class ChatLogActivity extends AppCompatActivity {
     TextView textView;
 
 
-     @Override
+    @Override
     public void bind(@NonNull ViewHolder viewHolder, int position) {
-         circleImageViewFromFrom = viewHolder.itemView.findViewById(R.id.circleImageViewFromFrom);
+        circleImageViewFromFrom = viewHolder.itemView.findViewById(R.id.circleImageViewFromFrom);
 
-         textView = viewHolder.itemView.findViewById(R.id.textviewFromFrom);
+        textView = viewHolder.itemView.findViewById(R.id.textviewFromFrom);
 
 
-
-         Picasso.get().load(url).into(circleImageViewFromFrom);
-         textView.setText(message);
- }
+        Picasso.get().load(url).into(circleImageViewFromFrom);
+        textView.setText(message);
+    }
 
     @Override
     public int getLayout() {
         return R.layout.chat_from_row;
     }
 }
-class  ChatTo extends Item<ViewHolder>{
+
+class ChatTo extends Item<ViewHolder> {
 
 
-
-//    String url;
+    //    String url;
     String text;
-    public ChatTo(String text){
+
+    public ChatTo(String text) {
         this.text = text;
 
 //        this.url = url;
     }
+
     CircleImageView circleImageViewFromTo;
     TextView textView2;
 
@@ -213,14 +215,13 @@ class  ChatTo extends Item<ViewHolder>{
     }
 
 
-
     @Override
     public int getLayout() {
         return R.layout.chat_to_row;
     }
 }
 
-class  Messages {
+class Messages {
     private String fromFrom;
     private String FromTo;
     private String timeStamp;

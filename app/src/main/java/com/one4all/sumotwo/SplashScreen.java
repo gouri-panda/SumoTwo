@@ -18,25 +18,15 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
             startActivity(intent);
             finish();
-        }else {
-            Intent intent = new Intent(SplashScreen.this,LatestMessageActivity.class);
+        } else {
+            Intent intent = new Intent(SplashScreen.this, LatestMessageActivity.class);
             startActivity(intent);
             finish();
         }
-//        handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent=new Intent(SplashScreen.this, LoginActivity.class);
-//                startActivity(intent);
-//                finish();
-//
-//            }
-//        },3000);
 //
     }
 }

@@ -35,8 +35,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="152dp"
         android:textSize="15dp"
-        android:text="Email"
-        />
+        android:text="Email" />
 
     <TextView
         android:id="@+id/textView5"

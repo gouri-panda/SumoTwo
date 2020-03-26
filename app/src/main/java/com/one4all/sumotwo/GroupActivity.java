@@ -43,11 +43,11 @@ public class GroupActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Group Chat");
         fetchData();
         GroupAdapter groupAdapter = new GroupAdapter();
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userList/"+FirebaseAuth.getInstance().getUid());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userList/" + FirebaseAuth.getInstance().getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Users users = snapshot.getValue(Users.class);
                     author = users.getMdisplayName();
                 }
@@ -60,7 +60,6 @@ public class GroupActivity extends AppCompatActivity {
         });
 
 
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,17 +70,17 @@ public class GroupActivity extends AppCompatActivity {
                 String timeStamp = ts.toString();
 //
 
-                GroupMessages groupMessages =new GroupMessages(author,text,timeStamp,FirebaseAuth.getInstance().getUid());
+                GroupMessages groupMessages = new GroupMessages(author, text, timeStamp, FirebaseAuth.getInstance().getUid());
                 FirebaseDatabase.getInstance().getReference().child("groupMessage").push().setValue(groupMessages).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("groupActivity","Message sent succesful");
+                        Log.d("groupActivity", "Message sent succesful");
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("groupActivity","Message was not succesful");
+                        Log.d("groupActivity", "Message was not succesful");
                     }
                 });
             }
@@ -89,14 +88,16 @@ public class GroupActivity extends AppCompatActivity {
 
 
     }
+
     GroupAdapter groupAdapter = new GroupAdapter();
 
-    public void findViewBYId(){
+    public void findViewBYId() {
         recyclerView = findViewById(R.id.chat_list_view_from_group_activity);
         editText = findViewById(R.id.messageInputFromGroupActivity);
         button = findViewById(R.id.sendButtonFromGroupActivity);
     }
-    public void fetchData(){
+
+    public void fetchData() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("groupMessage/");
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -114,17 +115,15 @@ public class GroupActivity extends AppCompatActivity {
 
                 recyclerView.setAdapter(groupAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(GroupActivity.this));
-                recyclerView.scrollToPosition(groupAdapter.getItemCount()-1);
+                recyclerView.scrollToPosition(groupAdapter.getItemCount() - 1);
 
             }
-
-
 
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 groupAdapter.clear();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     GroupMessages groupMessages = snapshot.getValue(GroupMessages.class);
                     String uid = groupMessages.getUid();
                     if (groupMessages.getUid().equals(uid)) {
@@ -160,14 +159,15 @@ public class GroupActivity extends AppCompatActivity {
 
 
 }
-class ViewHolderFrom extends Item<ViewHolder>{
+
+class ViewHolderFrom extends Item<ViewHolder> {
 
     TextView textView;
     Button button;
     String message;
     String author;
 
-    public ViewHolderFrom(String message,String author) {
+    public ViewHolderFrom(String message, String author) {
 
         this.message = message;
         this.author = author;
@@ -189,16 +189,19 @@ class ViewHolderFrom extends Item<ViewHolder>{
         return R.layout.group_activity_from;
     }
 }
-class ViewHolderTo extends Item<ViewHolder>{
+
+class ViewHolderTo extends Item<ViewHolder> {
     TextView textView;
     Button button;
     String message;
     String author;
-    public ViewHolderTo(String message,String author) {
+
+    public ViewHolderTo(String message, String author) {
 
         this.message = message;
         this.author = author;
     }
+
     @Override
     public void bind(@NonNull ViewHolder viewHolder, int position) {
         textView = viewHolder.itemView.findViewById(R.id.textView7);
@@ -214,7 +217,8 @@ class ViewHolderTo extends Item<ViewHolder>{
         return R.layout.group_activity_to;
     }
 }
-class GroupMessages{
+
+class GroupMessages {
     String author;
     String message;
     String timeStamp;
@@ -226,7 +230,8 @@ class GroupMessages{
         this.timeStamp = timeStamp;
         this.uid = uid;
     }
-    public GroupMessages(){
+
+    public GroupMessages() {
 
     }
 

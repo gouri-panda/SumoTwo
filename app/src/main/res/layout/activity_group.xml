@@ -1,15 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_log_activity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingBottom="3dp"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:id="@+id/chat_log_activity"
-
-
     android:background="#636e72"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="3dp"
     tools:context="com.one4all.sumotwo.GroupActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -39,14 +37,14 @@
 
 
             android:baselineAligned="false"
-            android:padding="16dp"
-
             android:gravity="center|left"
+
             android:hint="@string/prompt_msg"
             android:imeActionLabel="@string/action_send"
             android:imeOptions="actionUnspecified"
             android:inputType="textCapSentences|textAutoCorrect"
             android:maxLines="1"
+            android:padding="16dp"
 
             android:textColor="@color/black"
             android:textColorHint="@color/black" />
