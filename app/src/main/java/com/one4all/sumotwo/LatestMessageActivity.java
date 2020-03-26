@@ -1,5 +1,6 @@
 package com.one4all.sumotwo;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -31,10 +37,12 @@ import com.xwray.groupie.Item;
 import com.xwray.groupie.OnItemClickListener;
 import com.xwray.groupie.ViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,6 +64,7 @@ public class LatestMessageActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     ProgressBar progressBar;
     FloatingActionButton floatingActionButton;
+    private TextView noMessage;
 
 
     @Override
@@ -135,17 +144,27 @@ public class LatestMessageActivity extends AppCompatActivity {
 
     private void getUserNameAndPhoto() {
         String uid = FirebaseAuth.getInstance().getUid();
-         FirebaseDatabase.getInstance().getReference().child("userList"+uid).addListenerForSingleValueEvent(new ValueEventListener() {
+         FirebaseDatabase.getInstance().getReference().child("userList/"+uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    Users users = dataSnapshot.getValue(Users.class);
+                for (DataSnapshot usersList : dataSnapshot.getChildren()){
+                    Users users = usersList.getValue(Users.class);
                     Log.d(TAG, "onDataChange: users"+ users.mdisplayName);
+                    String imageUri = users.getUri();
+                    getSupportActionBar().setTitle(users.mdisplayName);
+                    getSupportActionBar().setDisplayShowCustomEnabled(true);
+//                    Glide.with(LatestMessageActivity.this).load(imageUri).into(R.id.action_bar_image_view);
+                    LayoutInflater layoutInflater =(LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View view = layoutInflater.inflate(R.layout.action_bar_image_view, null);
+                    getSupportActionBar().setCustomView(view);
+
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: database error"+databaseError.getDetails());
+                Log.d(TAG, "onCancelled: database message"+ databaseError.getMessage());
 
             }
         });
@@ -209,12 +228,17 @@ public class LatestMessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
                     progressBar.setVisibility(View.GONE);
+                    noMessage = findViewById(R.id.no_message);
+                    noMessage.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(LatestMessageActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                noMessage = findViewById(R.id.no_message);
+                noMessage.setText(databaseError.getMessage());
+                noMessage.setVisibility(View.VISIBLE);
             }
         });
         databaseReference.addChildEventListener(new ChildEventListener() {

@@ -46,4 +46,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_message_white_24dp" />
+
+    <TextView
+        android:id="@+id/no_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't start a conservation please start a conservation with any one"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
