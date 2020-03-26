@@ -200,6 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     uploadImageToFirebaseStorage();
                     saveName();
+                    Util.getUsersDetails(RegisterActivity.this);
                     progressDialog.dismiss();
                     Intent intent = new Intent(RegisterActivity.this, LatestMessageActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -237,7 +238,10 @@ public class RegisterActivity extends AppCompatActivity {
          If the user doesn't want to upload image choose default image i.e sumo logo
          */
         if (uri == null) {
-            uri = Uri.parse("android.resource://com.one4all.sumotwo/" + R.drawable.sumo1);
+//            uri = Uri.parse("android.resource://com.one4all.sumotwo/" + R.drawable.sumo1);
+            //Have to low our storage capacity
+            saveImageLinkToDataBase("default");
+            return;
         }
         String fileName = UUID.randomUUID().toString();
         final StorageReference firebaseStorage = FirebaseStorage.getInstance().getReference("/images/" + fileName);
@@ -253,21 +257,25 @@ public class RegisterActivity extends AppCompatActivity {
                         imageLink = uri.toString();
                         Log.d(TAG, "onComplete: photo was successfully completed");
                         Log.d("name", uri.toString());
-                        Users fireBaseUserList = new Users(firebaseAuth.getUid(), mUsernameView.getText().toString(), mEmailView.getText().toString(), imageLink);
-                        String uid = FirebaseAuth.getInstance().getUid();
-                        databaseReference.child("userList/" + uid).push().setValue(fireBaseUserList).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "onComplete: Account successfully created");
-                                } else {
-                                    Log.d(TAG, "onComplete: There was an error to create Account");
-                                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
-                                }
-                            }
-                        });
+                        String imagLink = uri.toString();
+                        saveImageLinkToDataBase(imageLink);
                     }
                 });
+            }
+        });
+    }
+    private void saveImageLinkToDataBase(String imageLink){
+        Users fireBaseUserList = new Users(firebaseAuth.getUid(), mUsernameView.getText().toString(), mEmailView.getText().toString(), imageLink);
+        String uid = FirebaseAuth.getInstance().getUid();
+        databaseReference.child("userList/" + uid).push().setValue(fireBaseUserList).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: Account successfully created");
+                } else {
+                    Log.d(TAG, "onComplete: There was an error to create Account");
+                    Log.d(TAG, "onComplete: " + task.getException().getMessage());
+                }
             }
         });
     }

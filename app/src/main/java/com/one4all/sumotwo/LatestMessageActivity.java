@@ -348,7 +348,7 @@ class ChatItemForLatestMessage extends Item<ViewHolder> {
     }
 
     @Override
-    public void bind(@NonNull ViewHolder viewHolder, final int position) {
+    public void bind(@NonNull final ViewHolder viewHolder, final int position) {
         circleImageView = viewHolder.itemView.findViewById(R.id.circleImageViewForLatestMessage);
         userMessage = viewHolder.itemView.findViewById(R.id.textView2);
         userName = viewHolder.itemView.findViewById(R.id.textView41);
@@ -373,8 +373,11 @@ class ChatItemForLatestMessage extends Item<ViewHolder> {
                     Users users = snapshot.getValue(Users.class);
                     Log.d("users", users.getMdisplayName());
                     userName.setText(users.getMdisplayName());
-
-                    Picasso.get().load(users.getUri()).into(circleImageView);
+                    if (users.getUri().equals("default")){
+                        Glide.with(viewHolder.itemView.getContext()).load(R.raw.sumo1).into(circleImageView);
+                    }else {
+                        Glide.with(viewHolder.itemView.getContext()).load(users.getUri()).placeholder(R.drawable.sumo1).into(circleImageView);
+                    }
                     userNameList.add(users.getMdisplayName());
                     Log.d("userList", users.getUid());
                     uidList.add(users.getUid());//1

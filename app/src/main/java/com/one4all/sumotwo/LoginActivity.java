@@ -130,10 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                         signUpButton.setVisibility(View.VISIBLE);
                         showError(Objects.requireNonNull(task.getException()).getMessage());
                     } else {
-                        sharedPreferencesUserDetails = getSharedPreferences("userDetails", MODE_PRIVATE).edit();
-                        String userId = task.getResult().getUser().getUid();
-                        Log.d(TAG, "onComplete: user uid "+ userId);
-                        sharedPreferencesUserDetails.putString("userUid",userId).apply();
+                        Util.getUsersDetails(LoginActivity.this);
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
