@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Util {
     private static final String TAG = "Util";
 
-    public static void getUsersDetails(final Context context ){
+    public static void getUsersDetailsFromFireBase(final Context context ){
         String userUid = FirebaseAuth.getInstance().getUid();
         FirebaseDatabase.getInstance().getReference().child("userList/"+userUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

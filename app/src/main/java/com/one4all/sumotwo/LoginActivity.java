@@ -3,11 +3,9 @@ package com.one4all.sumotwo;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -130,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                         signUpButton.setVisibility(View.VISIBLE);
                         showError(Objects.requireNonNull(task.getException()).getMessage());
                     } else {
-                        Util.getUsersDetails(LoginActivity.this);
+                        Util.getUsersDetailsFromFireBase(LoginActivity.this);
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);

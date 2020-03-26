@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,6 +67,11 @@ public class LatestMessageActivity extends AppCompatActivity {
     ProgressBar progressBar;
     FloatingActionButton floatingActionButton;
     private TextView noMessage;
+    private String userName;
+    private String userImageLink;
+    ImageView imageView;
+    TextView toolbarTextview;
+    Toolbar toolbar;
 
 
     @Override
@@ -112,9 +119,14 @@ public class LatestMessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_latest_message);
         recyclerView = findViewById(R.id.recyclerView_of_latest_message);
         floatingActionButton = findViewById(R.id.floatingActionButton);
+
         progressDialog = new ProgressDialog(LatestMessageActivity.this);
         progressBar = findViewById(R.id.progressBar);
-        getUserNameAndPhoto();
+        userName = Util.getUserName(this);
+        Log.d(TAG, "onCreate: user name" + userName);
+        userImageLink = Util.getUserImageLink(this);
+        Log.d(TAG, "onCreate: user link " + userImageLink);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Sumo");
 
 
         uidList = new ArrayList<>();
@@ -125,7 +137,6 @@ public class LatestMessageActivity extends AppCompatActivity {
 
 
         recyclerView.addItemDecoration(new DividerItemDecoration(LatestMessageActivity.this, DividerItemDecoration.VERTICAL));
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Sumo");
 
         fetchLatestMessage2();
         floatingActionButton.setBackgroundColor(Color.YELLOW);
@@ -140,34 +151,6 @@ public class LatestMessageActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void getUserNameAndPhoto() {
-        String uid = FirebaseAuth.getInstance().getUid();
-         FirebaseDatabase.getInstance().getReference().child("userList/"+uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot usersList : dataSnapshot.getChildren()){
-                    Users users = usersList.getValue(Users.class);
-                    Log.d(TAG, "onDataChange: users"+ users.mdisplayName);
-                    String imageUri = users.getUri();
-                    getSupportActionBar().setTitle(users.mdisplayName);
-                    getSupportActionBar().setDisplayShowCustomEnabled(true);
-//                    Glide.with(LatestMessageActivity.this).load(imageUri).into(R.id.action_bar_image_view);
-                    LayoutInflater layoutInflater =(LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-                    View view = layoutInflater.inflate(R.layout.action_bar_image_view, null);
-                    getSupportActionBar().setCustomView(view);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: database error"+databaseError.getDetails());
-                Log.d(TAG, "onCancelled: database message"+ databaseError.getMessage());
-
-            }
-        });
     }
 
     HashMap<String, Messages> hashMap = new HashMap<>();

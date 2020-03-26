@@ -20,7 +20,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -200,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     uploadImageToFirebaseStorage();
                     saveName();
-                    Util.getUsersDetails(RegisterActivity.this);
+                    Util.getUsersDetailsFromFireBase(RegisterActivity.this);
                     progressDialog.dismiss();
                     Intent intent = new Intent(RegisterActivity.this, LatestMessageActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
