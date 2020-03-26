@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#636e72"
+    android:background="@color/black"
     android:paddingTop="10dp"
+
 
     tools:context=".LatestMessageActivity">
 
@@ -18,6 +19,7 @@
         android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton"
         app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminateTint="@color/blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recyclerView_of_latest_message" />
 
@@ -39,7 +41,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="15dp"
         android:clickable="true"
+        android:background="@drawable/fab_background"
+        app:backgroundTint="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_message" />
+        app:srcCompat="@drawable/ic_message_white_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

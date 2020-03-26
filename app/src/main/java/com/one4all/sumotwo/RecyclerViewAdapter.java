@@ -44,7 +44,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 //        Picasso.get().load(images.get(position)).into(holder.circleImageView);
-        Glide.with(holder.itemView.getContext()).load(images.get(position)).into(holder.circleImageView);
+        Glide.with(holder.itemView.getContext()).load(images.get(position)).placeholder(R.drawable.sumo1).into(holder.circleImageView);
         holder.textView.setText(imageNames.get(position));
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,9 @@
 package com.one4all.sumotwo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -34,7 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     ImageView loginImage;
     private Button loginButton;
     private Button signUpButton;
-
+    private SharedPreferences.Editor sharedPreferencesUserDetails;
+    private static final String TAG = "LoginActivity";
 
 
     @Override
@@ -50,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.login_register_button);
         mPasswordView =  findViewById(R.id.login_password);
         getSupportActionBar().hide();
+        Glide.with(this).load(R.raw.spla).into(loginImage);
 
         loginImage.animate().scaleX(2f).scaleY(2f).setDuration(5000).start();
 //        loginImage.animate().translationXBy(1f).translationYBy(1f).setDuration(2000).start();
@@ -125,6 +130,10 @@ public class LoginActivity extends AppCompatActivity {
                         signUpButton.setVisibility(View.VISIBLE);
                         showError(Objects.requireNonNull(task.getException()).getMessage());
                     } else {
+                        sharedPreferencesUserDetails = getSharedPreferences("userDetails", MODE_PRIVATE).edit();
+                        String userId = task.getResult().getUser().getUid();
+                        Log.d(TAG, "onComplete: user uid "+ userId);
+                        sharedPreferencesUserDetails.putString("userUid",userId).apply();
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(LoginActivity.this, LatestMessageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0097e6</color>
-    <color name="colorPrimaryDark">#28759A</color>
+    <color name="colorPrimary">#1D1D1D</color>
+    <color name="colorPrimaryDark">#1D1D1D</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="yellow">#f1c40f</color>
     <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+
     <color name="green">#27AE60</color>
     <color name="light_purple">#ded4dc</color>
     <color name="light_green">#50d050</color>
@@ -21,6 +21,13 @@
     <color name="grey_500">#9E9E9E</color>
     <color name="fade_white">#D8D0D0</color>
     <color name="float_action_bar">#55efc4</color>
+    <color name="whiteCardColor">#fff</color>
+    <color name="coursecompare">#474646</color>
+    <color name="greycolor">#616161</color>
+    <color name="black">#000000</color><!--121212-->
+    <color name="semiTransparent">#1C1C1E</color><!--272727-->
+    <color name="bottomNavigationColor">#1D1D1D</color>
+    <color name="blue">#183EEF</color>
 
 
 

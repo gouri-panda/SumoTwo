@@ -1,6 +1,9 @@
 package com.one4all.sumotwo;
 
 import android.app.ProgressDialog;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -77,6 +82,7 @@ public class UserListActivity extends AppCompatActivity {
 
                 recyclerView.setAdapter(recyclerViewAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(UserListActivity.this));
+                recyclerView.addItemDecoration(new DividerItemDecoration(UserListActivity.this, DividerItemDecoration.HORIZONTAL));
 
 
 
@@ -87,25 +93,26 @@ public class UserListActivity extends AppCompatActivity {
 
             }
         });
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT |ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                String uid = recyclerViewAdapter.getUid(viewHolder.getAdapterPosition());
-                fireBaseReference.child(uid).setValue(new Users(FirebaseAuth.getInstance().getUid(), "No one", "gouri", "gourishanakr"));
-                Toast.makeText(UserListActivity.this, "Swiped", Toast.LENGTH_LONG ).show();
-                recyclerViewAdapter.notifyDataSetChanged();
-
-
-            }
-        }).attachToRecyclerView(recyclerView);
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT |ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                String uid = recyclerViewAdapter.getUid(viewHolder.getAdapterPosition());
+//                fireBaseReference.child(uid).setValue(new Users(FirebaseAuth.getInstance().getUid(), "No one", "gouri", "gourishanakr"));
+//                Toast.makeText(UserListActivity.this, "Swiped", Toast.LENGTH_LONG ).show();
+//                recyclerViewAdapter.notifyDataSetChanged();
+//
+//
+//            }
+//        }).attachToRecyclerView(recyclerView);
 
 
     }
+
 }
 
 

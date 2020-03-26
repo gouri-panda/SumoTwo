@@ -105,6 +105,7 @@ public class LatestMessageActivity extends AppCompatActivity {
         floatingActionButton = findViewById(R.id.floatingActionButton);
         progressDialog = new ProgressDialog(LatestMessageActivity.this);
         progressBar = findViewById(R.id.progressBar);
+        getUserNameAndPhoto();
 
 
         uidList = new ArrayList<>();
@@ -130,6 +131,24 @@ public class LatestMessageActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getUserNameAndPhoto() {
+        String uid = FirebaseAuth.getInstance().getUid();
+         FirebaseDatabase.getInstance().getReference().child("userList"+uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    Users users = dataSnapshot.getValue(Users.class);
+                    Log.d(TAG, "onDataChange: users"+ users.mdisplayName);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     HashMap<String, Messages> hashMap = new HashMap<>();
