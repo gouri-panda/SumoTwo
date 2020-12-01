@@ -2,6 +2,7 @@ package com.one4all.sumotwo;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatLogActivity extends AppCompatActivity {
+    private static final String TAG = "ChatLogActivity";
     RecyclerView recyclerView;
     Uri uri;
     String userUrl;
@@ -47,8 +49,6 @@ public class ChatLogActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.messageInput);
         imageUrl = getIntent().getStringExtra("userUrl");
         userUid = getIntent().getStringExtra("userUid");
-
-
         fetchDataFromUser();
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,79 +67,26 @@ public class ChatLogActivity extends AppCompatActivity {
                     messageInput.setText("");
 //                fetchDataFromUser();
                 }
-
-
             }
         });
-
-
     }
 
     public void fetchDataFromUser() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("/messages/" + userUid + "/" + FirebaseAuth.getInstance().getUid());
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            GroupAdapter groupAdapter2 = new GroupAdapter();
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                dataSnapshot.getValue(Messages.class);
-//                for (DataSnapshot  dataSnapshot1 : dataSnapshot.getChildren()){
-//                     Messages a =dataSnapshot1.getValue(Messages.class);
-//                     if (a.getFromTo().equals(FirebaseAuth.getInstance().getUid())){
-//                         groupAdapter2.add(new ChatTo(a.getMessage()));
-//
-//
-//                     }else {
-//                         groupAdapter2.add(new ChatFrom(imageUrl,a.getMessage()));
-//                     }
-//
-//
-//
-//                }
-//                groupAdapter2.notifyDataSetChanged();
-//                recyclerView.setAdapter(groupAdapter2);
-//                recyclerView.setLayoutManager(new LinearLayoutManager(ChatLogActivity.this));
-//                recyclerView.scrollToPosition(groupAdapter2.getItemCount()-1);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//            }
-
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Toast.makeText(ChatLogActivity.this,"Sorry message didn't send!",Toast.LENGTH_SHORT).show();
-//
-//
-//            }
-//        });
         databaseReference.addValueEventListener(new ValueEventListener() {
             GroupAdapter groupAdapter2 = new GroupAdapter();
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 groupAdapter2.clear();//To prevent copy message
-
-
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     Messages a = dataSnapshot1.getValue(Messages.class);
                     if (a.getFromTo().equals(FirebaseAuth.getInstance().getUid())) {
                         groupAdapter2.add(new ChatTo(a.getMessage()));
-
-
                     } else {
                         groupAdapter2.add(new ChatFrom(imageUrl, a.getMessage()));
                     }
-
-
                 }
-
-
                 recyclerView.setAdapter(groupAdapter2);
                 recyclerView.setLayoutManager(new LinearLayoutManager(ChatLogActivity.this));
                 recyclerView.scrollToPosition(groupAdapter2.getItemCount() - 1);
@@ -148,8 +95,7 @@ public class ChatLogActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-
+                Log.e(TAG, "onCancelled: database error "+databaseError.getMessage()  );
             }
 
         });
@@ -158,19 +104,14 @@ public class ChatLogActivity extends AppCompatActivity {
 }
 
 class ChatFrom extends Item<ViewHolder> {
-
     String url;
     String message;
-
     public ChatFrom(String url, String message) {
         this.url = url;
         this.message = message;
     }
-
     CircleImageView circleImageViewFromFrom;
     TextView textView;
-
-
     @Override
     public void bind(@NonNull ViewHolder viewHolder, int position) {
         circleImageViewFromFrom = viewHolder.itemView.findViewById(R.id.circleImageViewFromFrom);
@@ -190,14 +131,10 @@ class ChatFrom extends Item<ViewHolder> {
 
 class ChatTo extends Item<ViewHolder> {
 
-
-    //    String url;
     String text;
 
     public ChatTo(String text) {
         this.text = text;
-
-//        this.url = url;
     }
 
     CircleImageView circleImageViewFromTo;
@@ -207,14 +144,8 @@ class ChatTo extends Item<ViewHolder> {
     public void bind(@NonNull ViewHolder viewHolder, int position) {
         circleImageViewFromTo = viewHolder.itemView.findViewById(R.id.circleImageViewFromTo);
         textView2 = viewHolder.itemView.findViewById(R.id.button);
-
-//        Picasso.get().load().into(circleImageViewFromTo);
         textView2.setText(text);
-
-
     }
-
-
     @Override
     public int getLayout() {
         return R.layout.chat_to_row;

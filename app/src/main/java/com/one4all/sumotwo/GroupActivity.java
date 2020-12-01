@@ -74,13 +74,13 @@ public class GroupActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child("groupMessage").push().setValue(groupMessages).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("groupActivity", "Message sent succesful");
+                        Log.d("groupActivity", "Message sent successful");
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("groupActivity", "Message was not succesful");
+                        Log.d("groupActivity", "Message was not successful");
                     }
                 });
             }
